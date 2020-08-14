@@ -370,46 +370,40 @@ uint32_t SparkFun_Ambient_Light::readHighThresh(){
 // This function gets the sensor's ambient light's lux value. The lux value is
 // determined based on current gain and integration time settings. If the lux
 // value exceeds 1000 then a compensation formula is applied to it. 
-uint32_t SparkFun_Ambient_Light::readLight(){
+float SparkFun_Ambient_Light::readLight(){
 
   uint16_t lightBits =  _readRegister(AMBIENT_LIGHT_DATA_REG); 
-  uint32_t luxVal = _calculateLux(lightBits); 
+  float luxVal = _calculateLux(lightBits); 
 
   if (luxVal > 1000) {
-    uint32_t compLux = _luxCompensation(luxVal); 
-    return compLux; 
+    return _luxCompensation(luxVal); 
   }
-  else
-    return luxVal;
-
+  return luxVal;
 }
 
 // REG[0x05], bits[15:0]
 // This function gets the sensor's ambient light's lux value. The lux value is
 // determined based on current gain and integration time settings. If the lux
 // value exceeds 1000 then a compensation formula is applied to it. 
-uint32_t SparkFun_Ambient_Light::readWhiteLight(){
+float SparkFun_Ambient_Light::readWhiteLight(){
 
   uint16_t lightBits = _readRegister(WHITE_LIGHT_DATA_REG); 
-  uint32_t luxVal = _calculateLux(lightBits); 
+  float luxVal = _calculateLux(lightBits); 
 
   if (luxVal > 1000) {
-    uint32_t compLux = _luxCompensation(luxVal); 
-    return compLux; 
+    return _luxCompensation(luxVal); 
   }
-  else
-    return luxVal;
-
+  return luxVal;
 }
 
 // This function compensates for lux values over 1000. From datasheet:
 // "Illumination values higher than 1000 lx show non-linearity. This
 // non-linearity is the same for all sensors, so a compensation forumla..."
 // etc. etc. 
-uint32_t SparkFun_Ambient_Light::_luxCompensation(uint32_t _luxVal){ 
+float SparkFun_Ambient_Light::_luxCompensation(float _luxVal){ 
 
   // Polynomial is pulled from pg 10 of the datasheet. 
-  uint32_t _compLux = (.00000000000060135 * (pow(_luxVal, 4))) - 
+  float _compLux = (.00000000000060135 * (pow(_luxVal, 4))) - 
                       (.0000000093924 * (pow(_luxVal, 3))) + 
                       (.000081488 * (pow(_luxVal,2))) + 
                       (1.0023 * _luxVal);
@@ -422,7 +416,7 @@ uint32_t SparkFun_Ambient_Light::_luxCompensation(uint32_t _luxVal){
 // to use by using the bit representation of the gain as an index to look up
 // the conversion value in the correct integration time array. It then converts 
 // the value and returns it.  
-uint32_t SparkFun_Ambient_Light::_calculateLux(uint16_t _lightBits){
+float SparkFun_Ambient_Light::_calculateLux(uint16_t _lightBits){
 
   float _luxConv; 
   uint8_t _convPos;  
@@ -463,7 +457,7 @@ uint32_t SparkFun_Ambient_Light::_calculateLux(uint16_t _lightBits){
 
   // Multiply the value from the 16 bit register to the conversion value and return
   // it. 
-  uint32_t _calculatedLux = (_luxConv * _lightBits);
+  float _calculatedLux = (_luxConv * _lightBits);
   return _calculatedLux;
 
 }

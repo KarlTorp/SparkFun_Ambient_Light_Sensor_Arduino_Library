@@ -191,13 +191,13 @@ class SparkFun_Ambient_Light
     // This function gets the sensor's ambient light's lux value. The lux value is
     // determined based on current gain and integration time settings. If the lux
     // value exceeds 1000 then a compensation formula is applied to it. 
-    uint32_t readLight();
+    float readLight();
 
     // REG[0x05], bits[15:0]
     // This function gets the sensor's ambient light's lux value. The lux value is
     // determined based on current gain and integration time settings. If the lux
     // value exceeds 1000 then a compensation formula is applied to it. 
-    uint32_t readWhiteLight();
+    float readWhiteLight();
 
   private:
 
@@ -207,14 +207,14 @@ class SparkFun_Ambient_Light
     // "Illumination values higher than 1000 lx show non-linearity. This
     // non-linearity is the same for all sensors, so a compensation forumla..."
     // etc. etc. 
-    uint32_t _luxCompensation(uint32_t _luxVal);
+    float _luxCompensation(float _luxVal);
 
     // The lux value of the Ambient Light sensor depends on both the gain and the
     // integration time settings. This function determines which conversion value
     // to use by using the bit representation of the gain as an index to look up
     // the conversion value in the correct integration time array. It then converts 
     // the value and returns it.  
-    uint32_t _calculateLux(uint16_t _lightBits);
+    float _calculateLux(uint16_t _lightBits);
 
     // This function does the opposite calculation then the function above. The interrupt
     // threshold values given by the user are dependent on the gain and
